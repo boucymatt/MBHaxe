@@ -56,6 +56,11 @@ If the build dependencies are fullfilled, compile with `haxe compile-js.hxml` an
 ## MacOS
 See [here](README-macOS.md)
 
+## PS Vita
+
+The VitaSDK/HashLink C port is documented in [vita/README.md](vita/README.md).
+Run `./build-vita.sh` to generate the offline single-player VPK.
+
 
 # FAQ
 

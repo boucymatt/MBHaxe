@@ -75,7 +75,7 @@ class Gamepad {
 			return false;
 		for (button in buttons) {
 			var buttonId = getId(button);
-			if (buttonId < 0 || buttonId > gamepad.buttons.length)
+			if (buttonId < 0 || buttonId >= gamepad.buttons.length)
 				continue;
 			if (gamepad.isDown(buttonId))
 				return true;
@@ -88,7 +88,7 @@ class Gamepad {
 			return false;
 		for (button in buttons) {
 			var buttonId = getId(button);
-			if (buttonId < 0 || buttonId > gamepad.buttons.length)
+			if (buttonId < 0 || buttonId >= gamepad.buttons.length)
 				continue;
 			if (gamepad.isPressed(buttonId))
 				return true;
@@ -101,7 +101,7 @@ class Gamepad {
 			return false;
 		for (button in buttons) {
 			var buttonId = getId(button);
-			if (buttonId < 0 || buttonId > gamepad.buttons.length)
+			if (buttonId < 0 || buttonId >= gamepad.buttons.length)
 				continue;
 			if (gamepad.isReleased(buttonId))
 				return true;

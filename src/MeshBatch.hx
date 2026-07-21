@@ -40,7 +40,14 @@ class MeshBatch extends MultiMaterial {
 	static var modelViewID = hxsl.Globals.allocID("global.modelView");
 	static var modelViewTransposeID = hxsl.Globals.allocID("global.modelViewTranspose");
 	static var modelViewInverseID = hxsl.Globals.allocID("global.modelViewInverse");
+	#if vita
+	/* vitaGL's translated Cg path cannot compile the 16 KiB uniform block
+	 * produced by the desktop 1024-vector batch. MeshBatch already splits
+	 * instances across buffers, so keep each Vita batch within 4 KiB. */
+	static var MAX_BUFFER_ELEMENTS = 256;
+	#else
 	static var MAX_BUFFER_ELEMENTS = 1024;
+	#end
 
 	var instanced:h3d.prim.Instanced;
 	var dataPasses:BatchData;

@@ -1,0 +1,76 @@
+/*
+ * HashLink's OpenAL binding stores extension entry points in globals whose
+ * names intentionally match the OpenAL API.  That works with shared OpenAL,
+ * but OpenAL Soft is linked statically on Vita and exports the same names,
+ * producing duplicate symbols.  Keep the upstream binding unchanged and
+ * give only its dynamically loaded extension pointers private Vita names.
+ */
+#define alBufferDataStatic hl_vita_alBufferDataStatic
+#define alBufferSubDataSOFT hl_vita_alBufferSubDataSOFT
+#define alRequestFoldbackStart hl_vita_alRequestFoldbackStart
+#define alRequestFoldbackStop hl_vita_alRequestFoldbackStop
+#define alBufferSamplesSOFT hl_vita_alBufferSamplesSOFT
+#define alBufferSubSamplesSOFT hl_vita_alBufferSubSamplesSOFT
+#define alGetBufferSamplesSOFT hl_vita_alGetBufferSamplesSOFT
+#define alIsBufferFormatSupportedSOFT hl_vita_alIsBufferFormatSupportedSOFT
+#define alSourcedSOFT hl_vita_alSourcedSOFT
+#define alSource3dSOFT hl_vita_alSource3dSOFT
+#define alSourcedvSOFT hl_vita_alSourcedvSOFT
+#define alGetSourcedSOFT hl_vita_alGetSourcedSOFT
+#define alGetSource3dSOFT hl_vita_alGetSource3dSOFT
+#define alGetSourcedvSOFT hl_vita_alGetSourcedvSOFT
+#define alSourcei64SOFT hl_vita_alSourcei64SOFT
+#define alSource3i64SOFT hl_vita_alSource3i64SOFT
+#define alSourcei64vSOFT hl_vita_alSourcei64vSOFT
+#define alGetSourcei64SOFT hl_vita_alGetSourcei64SOFT
+#define alGetSource3i64SOFT hl_vita_alGetSource3i64SOFT
+#define alGetSourcei64vSOFT hl_vita_alGetSourcei64vSOFT
+#define alDeferUpdatesSOFT hl_vita_alDeferUpdatesSOFT
+#define alProcessUpdatesSOFT hl_vita_alProcessUpdatesSOFT
+#define alGenEffects hl_vita_alGenEffects
+#define alDeleteEffects hl_vita_alDeleteEffects
+#define alIsEffect hl_vita_alIsEffect
+#define alEffecti hl_vita_alEffecti
+#define alEffectiv hl_vita_alEffectiv
+#define alEffectf hl_vita_alEffectf
+#define alEffectfv hl_vita_alEffectfv
+#define alGetEffecti hl_vita_alGetEffecti
+#define alGetEffectiv hl_vita_alGetEffectiv
+#define alGetEffectf hl_vita_alGetEffectf
+#define alGetEffectfv hl_vita_alGetEffectfv
+#define alGenFilters hl_vita_alGenFilters
+#define alDeleteFilters hl_vita_alDeleteFilters
+#define alIsFilter hl_vita_alIsFilter
+#define alFilteri hl_vita_alFilteri
+#define alFilteriv hl_vita_alFilteriv
+#define alFilterf hl_vita_alFilterf
+#define alFilterfv hl_vita_alFilterfv
+#define alGetFilteri hl_vita_alGetFilteri
+#define alGetFilteriv hl_vita_alGetFilteriv
+#define alGetFilterf hl_vita_alGetFilterf
+#define alGetFilterfv hl_vita_alGetFilterfv
+#define alGenAuxiliaryEffectSlots hl_vita_alGenAuxiliaryEffectSlots
+#define alDeleteAuxiliaryEffectSlots hl_vita_alDeleteAuxiliaryEffectSlots
+#define alIsAuxiliaryEffectSlot hl_vita_alIsAuxiliaryEffectSlot
+#define alAuxiliaryEffectSloti hl_vita_alAuxiliaryEffectSloti
+#define alAuxiliaryEffectSlotiv hl_vita_alAuxiliaryEffectSlotiv
+#define alAuxiliaryEffectSlotf hl_vita_alAuxiliaryEffectSlotf
+#define alAuxiliaryEffectSlotfv hl_vita_alAuxiliaryEffectSlotfv
+#define alGetAuxiliaryEffectSloti hl_vita_alGetAuxiliaryEffectSloti
+#define alGetAuxiliaryEffectSlotiv hl_vita_alGetAuxiliaryEffectSlotiv
+#define alGetAuxiliaryEffectSlotf hl_vita_alGetAuxiliaryEffectSlotf
+#define alGetAuxiliaryEffectSlotfv hl_vita_alGetAuxiliaryEffectSlotfv
+#define alcSetThreadContext hl_vita_alcSetThreadContext
+#define alcGetThreadContext hl_vita_alcGetThreadContext
+#define alcLoopbackOpenDeviceSOFT hl_vita_alcLoopbackOpenDeviceSOFT
+#define alcIsRenderFormatSupportedSOFT hl_vita_alcIsRenderFormatSupportedSOFT
+#define alcRenderSamplesSOFT hl_vita_alcRenderSamplesSOFT
+#define alcDevicePauseSOFT hl_vita_alcDevicePauseSOFT
+#define alcDeviceResumeSOFT hl_vita_alcDeviceResumeSOFT
+#define alcGetStringiSOFT hl_vita_alcGetStringiSOFT
+#define alcResetDeviceSOFT hl_vita_alcResetDeviceSOFT
+
+#ifndef MBHAXE_HASHLINK_OPENAL_SOURCE
+#error "MBHAXE_HASHLINK_OPENAL_SOURCE must name the upstream HashLink OpenAL binding"
+#endif
+#include MBHAXE_HASHLINK_OPENAL_SOURCE

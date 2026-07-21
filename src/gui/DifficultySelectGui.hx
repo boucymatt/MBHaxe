@@ -71,9 +71,11 @@ class DifficultySelectGui extends GuiImage {
 		btnList.addButton(0, 'Gem Hunt', (e) -> {
 			MarbleGame.canvas.setContent(new LevelSelectGui("multiplayer"));
 		}, 20);
+		#if !vita
 		btnList.addButton(0, 'Custom Levels', (e) -> {
 			MarbleGame.canvas.setContent(new SPCustomsGui());
 		});
+		#end
 
 		var bottomBar = new GuiControl();
 		bottomBar.position = new Vector(0, 590);

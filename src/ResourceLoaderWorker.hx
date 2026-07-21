@@ -22,7 +22,7 @@ class ResourceLoaderWorker {
 	}
 
 	public function addTaskParallel(task:(() -> Void)->Void) {
-		#if (!android)
+		#if (!android && !vita)
 		paralleltasks.push(task);
 		#else
 		tasks.push(task);
@@ -62,7 +62,7 @@ class ResourceLoaderWorker {
 	public function loadFile(path:String) {
 		if (ResourceLoader.loadedFiles.exists(path))
 			return;
-		#if (!android)
+		#if (!android && !vita)
 		paralleltasks.push(fwd -> {
 			ResourceLoader.load(path).entry.load(fwd);
 		});

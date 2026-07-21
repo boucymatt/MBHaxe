@@ -43,6 +43,10 @@ class Console {
 		consumers = [];
 		timeSinceStart = haxe.Timer.stamp();
 		#if (hl && !android && !ios)
+		#if vita
+		if (!FileSystem.exists(Settings.settingsDir))
+			FileSystem.createDirectory(Settings.settingsDir);
+		#end
 		consoleFileHandle = sys.io.File.write(haxe.io.Path.join([Settings.settingsDir, "console.log"]), false);
 		#end
 	}
@@ -64,6 +68,9 @@ class Console {
 		entries.push(e);
 		#if (hl && !android && !ios)
 		consoleFileHandle.writeString('[${e.time}] ${e.text}\n');
+		#if vita
+		consoleFileHandle.flush();
+		#end
 		#end
 		#if android
 		trace('[${e.time}] ${msg}');
@@ -198,7 +205,7 @@ class Console {
 				MarbleGame.instance.limitingFps = true;
 				log("Set FPS to " + scale);
 			} else if (cmdType == 'reload') {
-				#if sys
+				#if (sys && !vita)
 				hl.Api.checkReload();
 				#end
 			} else if (cmdType == "profile") {

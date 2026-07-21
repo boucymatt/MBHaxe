@@ -1,0 +1,15 @@
+-cp src
+-cp vita/src
+-cp ../deps/hashlink/libs/sdl
+-cp ../deps/hashlink/libs/openal
+-lib heaps
+-D hlsdl=1.13.0
+-D hlopenal=1.4.0
+-D vita
+-D mobile
+-D windowSize=960x544
+-D windowFixed=1
+-D analyzer-optimize
+-D heaps_compact_mem
+-hl vita/native/marblegame.c
+--main Main

@@ -827,6 +827,9 @@ class Net {
 		return NetPlatform.Web;
 		#end
 		#if hl
+		#if vita
+		return NetPlatform.Vita;
+		#else
 		#if MACOS_BUNDLE
 		return NetPlatform.MacOS;
 		#else
@@ -834,6 +837,7 @@ class Net {
 		return NetPlatform.Android;
 		#else
 		return NetPlatform.PC;
+		#end
 		#end
 		#end
 		#end

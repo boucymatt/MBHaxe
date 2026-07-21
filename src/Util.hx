@@ -547,11 +547,20 @@ class Util {
 	}
 
 	public static function getPlatform() {
+		#if vita
+		return "PS Vita";
+		#end
 		#if ios
 		return "iOS";
 		#end
 		#if android
 		return "Android";
+		#end
+		#if js
+		return "Web";
+		#end
+		#if (hl && !vita && !ios && !android)
+		return "Desktop";
 		#end
 	}
 }

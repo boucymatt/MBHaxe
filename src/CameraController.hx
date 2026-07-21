@@ -9,11 +9,11 @@ import src.Settings;
 import hxd.Key;
 import src.Util;
 import h3d.Quat;
-#if hlsdl
+#if (hlsdl && !vita)
 import sdl.Cursor;
 import sdl.Sdl;
 #end
-#if hldx
+#if (hldx && !vita)
 import dx.Cursor;
 import dx.Window;
 #end
@@ -91,19 +91,23 @@ class CameraController extends Object {
 		var pointercontainer = js.Browser.document.querySelector("#pointercontainer");
 		pointercontainer.hidden = true;
 		#end
+		#if !vita
 		_ignoreCursor = true;
 		if (!Util.isTouchDevice())
 			Window.getInstance().lockPointer((x, y) -> orbit(x, y));
 		#if hl
 		Cursor.show(false);
 		#end
+		#end
 	}
 
 	public function unlockCursor() {
+		#if !vita
 		if (!Util.isTouchDevice())
 			Window.getInstance().unlockPointer();
 		#if hl
 		Cursor.show(true);
+		#end
 		#end
 		#if js
 		var jsCanvas = @:privateAccess Window.getInstance().canvas;

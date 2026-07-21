@@ -29,3 +29,6 @@ Export/android/app/src/main/assets
 Export/android/app/src/main/cpp
 Export/android/app/src/main/java
 Export/android/app/src/main/build.hxml
+
+vita/build/
+vita/native/

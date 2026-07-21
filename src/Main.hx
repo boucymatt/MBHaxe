@@ -28,11 +28,18 @@ import src.Http;
 import src.Renderer;
 import src.MissionList;
 import src.MPCustoms;
+#if vita
+import src.VitaDiagnostics;
+#end
 
 class Main extends hxd.App {
 	var marbleGame:MarbleGame;
 
 	var loaded:Bool = false;
+	#if vita
+	var firstUpdateLogged:Bool = false;
+	var firstRenderLogged:Bool = false;
+	#end
 
 	var frameByFrame:Bool = false;
 
@@ -40,11 +47,14 @@ class Main extends hxd.App {
 
 	override function init() {
 		super.init();
+		#if vita
+		VitaDiagnostics.stage("Main.init: engine ready");
+		#end
 
 		s3d.renderer = new Renderer();
 		// s3d.checkPasses = false;
 
-		#if (hl && !android && !ios)
+		#if (hl && !android && !ios && !vita)
 		hl.UI.closeConsole();
 		#end
 
@@ -53,9 +63,9 @@ class Main extends hxd.App {
 		var zoomRatio = Util.isTouchDevice() ? js.Browser.window.screen.height * js.Browser.window.devicePixelRatio / 768 : js.Browser.window.devicePixelRatio; // js.Browser.window.devicePixelRatio;
 		s2d.scaleMode = Zoom(zoomRatio);
 		#end
-		#if (android || ios)
+		#if (android || ios || vita)
 		var zoomRatio = Math.min(Window.getInstance().height, Window.getInstance().width) / 700;
-		#if ios
+		#if (ios || vita)
 		var sw = Window.getInstance().width;
 		var sh = Window.getInstance().height;
 		Settings.optionsSettings.screenWidth = Std.int(sw / zoomRatio);
@@ -92,29 +102,74 @@ class Main extends hxd.App {
 
 		new Console(); // Singleton
 		Console.log("Initializing MBHaxe");
+		#if vita
+		VitaDiagnostics.stage("Main.init: console ready");
+		#end
 		#if hl
 		Console.log("System: " + Sys.systemName());
 		#end
 
 		// try {
+		#if !vita
 		RTC.init();
 		Http.init();
 		haxe.MainLoop.add(() -> Http.loop());
+		#end
 		Settings.init();
+		#if vita
+		VitaDiagnostics.stage("Main.init: settings ready");
+		#end
 		Gamepad.init();
+		#if vita
+		VitaDiagnostics.stage("Main.init: gamepad ready");
+		#end
+		#if !vita
 		MPCustoms.loadMissionList();
+		#end
 		ResourceLoader.init(s2d, () -> {
+			#if vita
+			VitaDiagnostics.stage("Main.init: filesystem ready");
+			#end
 			AudioManager.init();
 			AudioManager.playShell();
+			#if vita
+			VitaDiagnostics.stage("Main.init: audio ready");
+			#end
+			#if !vita
 			Marbleland.init();
+			#end
 			marbleGame = new MarbleGame(s2d, s3d);
 			MarbleGame.canvas.setContent(new PresentsGui());
+			#if vita
+			VitaDiagnostics.stage("Main.init: first UI ready");
+			#end
 			haxe.Timer.delay(() -> {
+				#if vita
+				VitaDiagnostics.stage("Main.init: mission list begin");
+				#end
 				MissionList.buildMissionList(); // Yeah pls
+				#if vita
+				// Mission parsing creates many temporary strings and parser nodes. Free
+				// them before the preview world begins its own allocation burst.
+				hl.Gc.major();
+				#end
+				#if vita
+				VitaDiagnostics.stage("Main.init: mission list ready");
+				VitaDiagnostics.stage("Main.init: preview world begin");
+				#end
 				marbleGame.startPreviewWorld(() -> {
+					#if vita
+					VitaDiagnostics.stage("Main.init: preview world ready");
+					VitaDiagnostics.stage("Main.init: preview mission begin");
+					#end
 					marbleGame.setPreviewMission('urban', () -> {
 						MarbleGame.canvas.setContent(new MainMenuGui());
+						#if vita
+						VitaDiagnostics.stage("Main.init: main menu ready");
+						#end
+						#if !vita
 						VersionGui.checkVersion();
+						#end
 					});
 				});
 			}, 100);
@@ -122,6 +177,9 @@ class Main extends hxd.App {
 			new ProfilerUI(s2d);
 
 			loaded = true;
+			#if vita
+			VitaDiagnostics.stage("Main.init: startup complete");
+			#end
 		});
 		// } catch (e) {
 		// 	Console.error(e.message);
@@ -151,6 +209,11 @@ class Main extends hxd.App {
 	}
 
 	override function update(dt:Float) {
+		#if vita
+		var logFirstUpdate = !firstUpdateLogged;
+		if (logFirstUpdate)
+			VitaDiagnostics.stage("Main.loop: first update begin");
+		#end
 		super.update(dt);
 		ProfilerUI.begin(1);
 		ProfilerUI.measure("updateBegin", 1);
@@ -161,7 +224,9 @@ class Main extends hxd.App {
 			// 	marbleGame.update(1 / 60);
 			// 	timeAccumulator -= 1 / 60;
 			// }
+			#if !vita
 			RTC.processEvents();
+			#end
 			marbleGame.update(dt);
 			// } catch (e) {
 			// Console.error(e.message);
@@ -172,9 +237,20 @@ class Main extends hxd.App {
 			ProfilerUI.update(this.engine.fps);
 		}
 		ProfilerUI.end(1);
+		#if vita
+		if (logFirstUpdate) {
+			firstUpdateLogged = true;
+			VitaDiagnostics.stage("Main.loop: first update complete");
+		}
+		#end
 	}
 
 	override function render(e:h3d.Engine) {
+		#if vita
+		var logFirstRender = !firstRenderLogged;
+		if (logFirstRender)
+			VitaDiagnostics.stage("Main.loop: first render begin");
+		#end
 		// this.world.render(e);
 		ProfilerUI.begin(0);
 		if (loaded) {
@@ -186,10 +262,31 @@ class Main extends hxd.App {
 		#if hl
 		e.driver.present();
 		#end
+		#if vita
+		if (logFirstRender) {
+			firstRenderLogged = true;
+			VitaDiagnostics.stage("Main.loop: first render complete");
+		}
+		#end
 	}
 
 	static function main() {
 		// h3d.mat.PbrMaterialSetup.set();
+		#if vita
+		VitaDiagnostics.reset();
+		hxd.System.reportError = VitaDiagnostics.reportError;
+		sdl.Sdl.onGlContextError = () -> {
+			VitaDiagnostics.reportError("Failed to create the VitaGL shader context; check ur0:data/libshacccg.suprx");
+			Sys.exit(-1);
+		};
+		try {
+			new Main();
+		} catch (error:Dynamic) {
+			VitaDiagnostics.reportError(error);
+			throw error;
+		}
+		#else
 		new Main();
+		#end
 	}
 }

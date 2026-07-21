@@ -237,6 +237,8 @@ class Settings {
 	public static var settingsDir = Path.join([Sys.getEnv("HOME"), "Library", "Application Support", "MBHaxe-MBP"]);
 	#elseif IOS_BUNDLE
 	public static var settingsDir = Path.join([Sys.getEnv("HOME"), "Documents", "MBHaxe-MBU"]);
+	#elseif vita
+	public static var settingsDir = "ux0:data/MBHaxe-MBU";
 	#else
 	public static var settingsDir = ".";
 	#end
@@ -277,8 +279,15 @@ class Settings {
 	@:hlNative public static function call_import_cb():Void {}
 	#end
 
+	#if vita
+	public static function open_web_url(url:String):Void {}
+	public static function export_prefs():Void {}
+	public static function start_import_prefs(prefsCb:(b:hl.Bytes) -> Void):Void {}
+	public static function call_import_cb():Void {}
+	#end
+
 	public static function applySettings() {
-		#if (hl && !android)
+		#if (hl && !android && !vita)
 		Window.getInstance().resize(optionsSettings.screenWidth, optionsSettings.screenHeight);
 		Window.getInstance().displayMode = optionsSettings.isFullScreen ? FullscreenResize : Windowed;
 		#end
@@ -576,6 +585,17 @@ class Settings {
 
 	public static function init() {
 		load();
+		#if vita
+		// The Vita display is fixed at 960x544. Keep expensive render targets small
+		// enough for the 128 MiB video-memory budget while retaining a sharp UI.
+		optionsSettings.screenWidth = 960;
+		optionsSettings.screenHeight = 544;
+		optionsSettings.isFullScreen = true;
+		optionsSettings.shadows = false;
+		optionsSettings.reflectionDetail = 0;
+		if (optionsSettings.maxPixelRatio > 1)
+			optionsSettings.maxPixelRatio = 1;
+		#end
 		#if hl
 		var wnd = Window.getInstance();
 		// var zoomRatio = Window.getInstance().windowToPixelRatio;

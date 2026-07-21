@@ -29,6 +29,8 @@ class ResourceLoader {
 	#if (hl && !android)
 	#if MACOS_BUNDLE
 	public static var fileSystem:FileSystem = new TorqueFileSystem(Path.normalize(Path.join([Path.directory(Sys.programPath()), "..", "Resources"])), null);
+	#elseif vita
+	public static var fileSystem:FileSystem = new TorqueFileSystem("app0:/", null);
 	#else
 	public static var fileSystem:FileSystem = new TorqueFileSystem(".", null);
 	#end

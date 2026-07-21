@@ -56,6 +56,7 @@ class VideoOptionsGui extends GuiImage {
 		optionCollection.extent = new Vector(815, 500);
 		innerCtrl.addChild(optionCollection);
 
+		#if !vita
 		if (!Util.isTouchDevice()) {
 			var resolutionOpt = optionCollection.addOption(1, "Fullscreen Res", [
 				"1024 x 800",
@@ -106,6 +107,7 @@ class VideoOptionsGui extends GuiImage {
 			}, 0.35);
 			displayOpt.setCurrentOption(Settings.optionsSettings.isFullScreen ? 0 : 1);
 		}
+		#end
 
 		var vsyncOpt = optionCollection.addOption(1, "VSync", ["Disabled", "Enabled"], (idx) -> {
 			Settings.optionsSettings.vsync = (idx == 1);
@@ -143,6 +145,7 @@ class VideoOptionsGui extends GuiImage {
 		}, 0.35);
 		cameraOpt.setCurrentOption(Std.int(Util.clamp(Math.floor(((Settings.optionsSettings.cameraDistance - 1.5) / (3 - 1.5)) * 5), 0, 5)));
 
+		#if !vita
 		var rfOpt = optionCollection.addOption(1, "Reflection Detail", ["None", "Sky Only", "Level and Sky", "Level, Sky and Items", "Everything"], (idx) -> {
 			Settings.optionsSettings.reflectionDetail = idx;
 			return true;
@@ -175,6 +178,7 @@ class VideoOptionsGui extends GuiImage {
 		else if (Settings.optionsSettings.maxPixelRatio == 100)
 			curPixelRatioIndex = 4;
 		pxOpt.setCurrentOption(curPixelRatioIndex);
+		#end
 
 		var bottomBar = new GuiControl();
 		bottomBar.position = new Vector(0, 590);

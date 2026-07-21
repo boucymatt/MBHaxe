@@ -1,5 +1,59 @@
 package fs;
 
+#if vita
+
+import hxd.fs.LocalFileSystem;
+import src.Settings;
+
+class TorqueFileEntry extends LocalEntry {
+	override function load(?onReady:Void->Void):Void {
+		if (onReady == null)
+			return;
+		if (Settings.optionsSettings.fastLoad)
+			onReady();
+		else
+			haxe.Timer.delay(onReady, 1);
+	}
+}
+
+/** Read-only, case-preserving view of the assets installed in the VPK. */
+class TorqueFileSystem extends LocalFileSystem {
+	static function normalizePath(path:String):String {
+		if (path == null)
+			return path;
+		path = path.split("\\").join("/");
+		while (StringTools.startsWith(path, "/"))
+			path = path.substr(1);
+		return path;
+	}
+
+	public function new(dir:String, configuration:String) {
+		super(".", configuration);
+		baseDir = "app0:/";
+		root = new TorqueFileEntry(this, "root", null, baseDir);
+	}
+
+	override function checkPath(path:String) {
+		return true;
+	}
+
+	override function open(path:String, check = true) {
+		path = normalizePath(path);
+		var cached = fileCache.get(path.toLowerCase());
+		if (cached != null)
+			return cached.r;
+
+		var entry = null;
+		var fullPath = baseDir + path;
+		if (!check || sys.FileSystem.exists(fullPath))
+			entry = new TorqueFileEntry(this, path.split("/").pop(), path, fullPath);
+		fileCache.set(path.toLowerCase(), {r: entry});
+		return entry;
+	}
+}
+
+#end
+
 #if ios
 
 import hxd.fs.LocalFileSystem;
